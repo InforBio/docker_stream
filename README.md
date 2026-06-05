@@ -1,10 +1,12 @@
 # STREAM Analysis Environment — Docker Setup
 
-This Docker image contains a pre-configured Python 3.7 environment (`stream_env`) with [STREAM](https://github.com/pinellolab/STREAM) and all required dependencies. You run analysis scripts directly in the terminal inside the container.
+This Docker image provides a pre-configured Python 3.7 environment (`stream_env`) with [STREAM](https://github.com/pinellolab/STREAM) and all required dependencies, ready to use from the terminal.
+
+> **Platform:** This guide targets macOS. Linux users can follow the same steps but do not need the `--platform linux/amd64` flag. Windows users need Docker Desktop with WSL2 and should adapt volume paths accordingly.
 
 ## Prerequisites
 
-- Docker Desktop installed and running on your Mac
+- [Docker Desktop](https://docs.docker.com/desktop/setup/install/mac-install/) installed and running on your Mac
 
 ## What you need
 
@@ -67,6 +69,7 @@ docker run --name stream_container --platform linux/amd64 -it \
 ```
 
 > `--platform linux/amd64` is required on Apple Silicon Macs (M1/M2/M3) because the image was built for Intel architecture. Do not remove this flag.
+> `-it` keeps the terminal interactive so you can type commands inside the container.
 
 This opens a bash shell inside the container. Your local folder will be accessible at `/workspace` inside the container.
 
@@ -118,6 +121,8 @@ To resume the next day:
 ```sh
 docker start -ai stream_container
 ```
+
+> `-ai` reattaches the terminal (`-a`) and keeps it interactive (`-i`).
 
 This drops you back into the bash shell. Re-run the two activation commands from Step 3.
 
