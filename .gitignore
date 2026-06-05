@@ -1,0 +1,5 @@
+.DS_Store
+*.tar.gz
+NOTES.md
+README_files/
+*html

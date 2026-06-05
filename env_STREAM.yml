@@ -1,0 +1,24 @@
+# pour créer l'environnemnt taper dans terminal : 
+# conda env create -f env_STREAM.yml
+name: stream_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - r-base=3.6.1
+  - rpy2=2.9.4
+  - stream=1.0
+  - jupyterlab=3.2
+  # - numpy=1.19.2
+  # - pandas=1.0.5
+  - scipy=1.7.3
+  - matplotlib=3.5.3
+  # - scikit-learn=1.0.2
+  - networkx=2.1
+  # - statsmodels=0.12.1
+  - python-graphviz
+  # - anndata=0.7.8
+  # - scanpy=1.6.0
+  # - ipykernel
+  - h5py=2.10.0
