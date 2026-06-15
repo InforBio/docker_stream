@@ -34,9 +34,10 @@ gunzip -c ~/Downloads/inforbio-stream.tar.gz | docker load
 **Option 1b — from Docker Hub (requires internet):**
 
 ```sh
-docker pull lijiaoning/inforbio-stream:latest
+docker pull --platform linux/amd64 lijiaoning/inforbio-stream:latest
 docker tag lijiaoning/inforbio-stream:latest inforbio-stream
 ```
+> `--platform linux/amd64` is required on Apple Silicon Macs (M1/M2/M3) because the image was built for Intel architecture. Do not remove this flag.
 
 The `docker tag` line gives the image the short name `inforbio-stream` used in the rest of this guide.
 
@@ -68,7 +69,6 @@ docker run --name stream_container --platform linux/amd64 -it \
     inforbio-stream /bin/bash
 ```
 
-> `--platform linux/amd64` is required on Apple Silicon Macs (M1/M2/M3) because the image was built for Intel architecture. Do not remove this flag.
 > `-it` keeps the terminal interactive so you can type commands inside the container.
 
 This opens a bash shell inside the container. Your local folder will be accessible at `/workspace` inside the container.
