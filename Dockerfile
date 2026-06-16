@@ -22,4 +22,24 @@ RUN conda env create -f env_STREAM.yml
 RUN conda run -n stream_env conda install -c conda-forge h5py=2.10.0 --force-reinstall -y
 RUN echo 'unset R_HOME' >> /root/.bashrc
 
+# get_version<3 must be pinned before scanpy: scanpy 1.6.0 depends on legacy_api_wrap,
+# which calls get_version at import time; get_version>=3 changed _detect_vcs() signature.
+# networkx==2.3: satisfies scanpy>=2.3; Graph.node removed in 2.4+ breaks STREAM.
+RUN conda install -n stream_env pip -y && \
+    /opt/miniconda/envs/stream_env/bin/python -m pip install "networkx==2.3" "get_version<3" scanpy==1.6.0
+
+# Patch STREAM source: networkx 2.3 renamed spring_layout's random_state -> seed;
+# also patch Graph.node -> Graph.nodes (removed in networkx 2.4+).
+RUN STREAM=/opt/miniconda/envs/stream_env/lib/python3.7/site-packages/stream && \
+    sed -i 's/nx\.spring_layout(flat_tree,random_state=/nx.spring_layout(flat_tree,seed=/g' $STREAM/extra.py $STREAM/core.py && \
+    sed -i 's/flat_tree\.node\b/flat_tree.nodes/g; s/epg\.node\b/epg.nodes/g' $STREAM/extra.py $STREAM/core.py
+
+# Patch STREAM for pandas compatibility: newer pandas rejects assigning an iterable
+# to a single cell via .loc; use .at for single-cell writes and a loop for multi-column.
+COPY patch_stream.py /tmp/patch_stream.py
+RUN /opt/miniconda/envs/stream_env/bin/python /tmp/patch_stream.py
+
+# Use non-display backend so matplotlib works headless without pre-importing it.
+ENV MPLBACKEND=Agg
+
 SHELL ["conda", "run", "-n", "stream_env", "/bin/bash", "-c"]
